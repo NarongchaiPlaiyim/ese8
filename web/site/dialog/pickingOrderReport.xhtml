@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    </h:head>
+    <p:panel id="pickingReportPanel" styleClass="panel-dialog">
+        <h:form id="pickingReportForm">
+            <table border="0">
+                <tr>
+                    <td class="right">
+                        <p:commandButton id="confirmation"
+                                         style="width: 250px; max-width: 250px; min-width: 250px"
+                                         value="Confirmation Pacjing"
+                                         process="@this"
+                                         update=":pickingOrderForm"
+                                         oncomplete="PF('reportPickingDlg').hide()"
+                                         action="#{pickingOrderBean.confirmationPackingReport()}"
+                                         ajax="false"
+                                         icon="ui-icon-print"
+                                         styleClass="medium" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="right">
+                        <p:commandButton id="stiketWorkLoad"
+                                         value="Stiker Work Load"
+                                         style="width: 250px; max-width: 250px; min-width: 250px"
+                                         process="@this"
+                                         update=":pickingOrderForm"
+                                         action="#{pickingOrderBean.stikerWorkLoadReport()}"
+                                         ajax="false"
+                                         oncomplete="PF('reportPickingDlg').hide()"
+                                         icon="ui-icon-print"
+                                         styleClass="medium" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="right">
+                        <p:commandButton id="pickOrderWithBarcode"
+                                         value="Picking Order with iten barcode"
+                                         style="width: 250px; max-width: 250px; min-width: 250px"
+                                         process="@this"
+                                         update=":pickingOrderForm"
+                                         action="#{pickingOrderBean.stikerWorkLoadReport()}"
+                                         ajax="false"
+                                         oncomplete="PF('reportPickingDlg').hide()"
+                                         icon="ui-icon-print"
+                                         styleClass="medium" />
+                    </td>
+                </tr>
+            </table>
+        </h:form>
+    </p:panel>
+</f:view>
+</html>

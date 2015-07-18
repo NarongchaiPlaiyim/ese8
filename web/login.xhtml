@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:pe="http://primefaces.org/ui/extensions"
+        >
+    <h:head>
+        <title>Login Page </title>
+        <h:outputScript library="js" name="custom.js"/>
+    </h:head>
+    <style type="text/css" >
+        .loginfooter {
+            font-size: 11px; color: rgba(255,255,255,0.5); position: absolute; position: fixed; bottom: 0; left: 0;
+            width: 100%; text-align: center; font-family: arial, sans-serif !important; padding: 5px 0; }
+    </style>
+    <h:body>
+        <h:form id="frmLogin">
+            <div style="text-align: center">
+                <p:panel style="border: 0">
+                <p:graphicImage library="images" name="/shared/DN1.png"/>
+                </p:panel>
+            </div>
+            <div style="text-align: center">
+                <p:panel style="border: 0">
+                    <p:inputText value="#{loginBean.userName}" placeholder="Enter your username." />
+                </p:panel>
+            </div>
+            <div style="text-align: center">
+                <p:panel style="border: 0">
+                    <p:password value="#{loginBean.password}" placeholder="Enter your password." />
+                </p:panel>
+            </div>
+            <div style="text-align: center">
+                <p:panel style="border: 0">
+                    <p:commandButton id="test1" value="#{msg.get('btn.name.login')}"
+                                     style="width: 240px"
+                        update=":msgBoxSystemMessagePanel"
+                        onstart="PF('bui').block()"
+                        action="#{loginBean.login}"
+                        oncomplete="PF('bui').unblock()" />
+
+                    <p:commandButton id="test12" value="Ajex loader"
+                                     rendered="#{false}"
+                                     style="width: 240px"
+                                     update=":msgBoxSystemMessagePanel"
+                                     onstart="PF('bui').block()"
+                                     action="#{loginBean.test()}"
+                                     oncomplete="PF('bui').unblock()" />
+                </p:panel>
+            </div>
+            <!--<p:panel style="border: 0">-->
+                <!--<p:treeTable value="#{index.root}" var="document"  selectionMode="checkbox">-->
+                    <!--<p:column style="min-width: 20px; max-width: 20px" />-->
+                    <!--<p:column style="min-width: 20px; max-width: 20px" headerText="Select">-->
+                        <!--<h:selectBooleanCheckbox id="combineBox"-->
+                                                 <!--value="#{true}">-->
+                        <!--</h:selectBooleanCheckbox>-->
+                    <!--</p:column>-->
+                    <!--<p:column headerText="Menu">-->
+                        <!--<h:outputText value="#{document.name}" />-->
+                    <!--</p:column>-->
+                    <!--<p:column headerText="Tab">-->
+                        <!--<h:outputText value="#{document.size}" />-->
+                    <!--</p:column>-->
+                    <!--<p:column headerText="Action">-->
+                        <!--<h:outputText value="#{document.type}" />-->
+                    <!--</p:column>-->
+                <!--</p:treeTable>-->
+            <!--</p:panel>-->
+        </h:form>
+    </h:body>
+    <div class="loginfooter">
+        <p style="color: #2F91BD">Powered by Extra Solution Engineering Co.,Ltd.</p>
+    </div>
+    <p:panel id="msgBoxSystemMessagePanel" style="border: 0">
+        <p:confirmDialog id="msgBoxSystemMessageDialog" widgetVar="msgBoxSystemMessageDlg" width="#{msg.get('dialog.message.size')}" closable="false"
+                         style="border: 0;"
+                         header="#{loginBean.messageHeader}" message="#{loginBean.message}" >
+            <div style="text-align: right">
+                <p:commandButton value="#{msg.get('btn.name.ok')}"
+                                 process="@this"
+                                 update=":frmLogin"
+                                 icon="ui-icon-check"
+                                 styleClass="medium" style="#{msg.get('btn.size')}"
+                                 oncomplete="PF('msgBoxSystemMessageDlg').hide()"/>
+            </div>
+        </p:confirmDialog>
+    </p:panel>
+    <pe:blockUI widgetVar="bui" centerX="true" centerY="true">
+            <p:panel style="border: 0">
+                <div style="text-align: center;">
+                    <h:outputText value="Please wait..." />
+                </div>
+                <div style="text-align: right;">
+                    <p:graphicImage value="/resources/images/shared/292.GIF"/>
+                </div>
+            </p:panel>
+
+        <!-- DEsign by copy by -->
+        <!--<div style="text-align: right">-->
+            <!--<h:panelGrid columns="2" styleClass="center">-->
+                <!--<h:outputText value="Please wait..." />-->
+                <!--<p:graphicImage value="/resources/images/shared/292.GIF"/>-->
+            <!--</h:panelGrid>-->
+        <!--</div>-->
+    </pe:blockUI>
+</f:view>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    </h:head>
+    <p:panel id="userRolePanel" styleClass="panel-dialog">
+        <h:form id="userRoleForm">
+            <table border="0">
+                <tr>
+                    <td class="titlemenu">
+                        <h:outputLabel value="User Authorize"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="right">
+                        <p:commandButton id="btnAddUser"
+                                         value="Add to User"
+                                         styleClass="medium"
+                                         process="@form"
+                                         update=":msgBoxSystemMessagePanel, :userAccessForm:roleTabble, :userAccessForm:userAuthorizeTable"
+                                         action="#{userManagement.onAddToUserByDialogRole}"
+                                         icon="ui-icon-plusthick"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p:inputText id="keySearch" value="#{userManagement.keySearchRole}"/>
+                        <p:commandButton id="btnSearchRole" icon="ui-icon-search"
+                                         onstart="PF('bui').block()"
+                                         oncomplete="PF('bui').unblock()"
+                                         action="#{userManagement.onFilterRole()}"
+                                         update=":userRoleForm:roleTable"
+                                         process="@form"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p:dataTable id="roleTable" rowIndexVar="rowIndex"
+                                     styleClass="full_table"
+                                     rows="5"
+                                     paginator="true"
+                                     rowKey="#{systemRole.id}"
+                                     value="#{userManagement.systemRoleModelDialogList}"
+                                     selection="#{userManagement.selectRole}"
+                                     var="systemRole"
+                                     style="width: 100%; max-width: 100%; min-width: 100%">
+                            <p:ajax event="rowSelect"/>
+                            <p:column selectionMode="multiple" style="width:16px;text-align:center; height: 20px"/>
+                            <p:column headerText="Role " style="width: 250px; max-width: 250px; min-width: 250px" styleClass="center">
+                                <h:outputText value="#{systemRole.code}" />
+                            </p:column>
+                            <p:column headerText="" style="width: 80px; max-width: 80px; min-width: 80px" styleClass="center">
+                                <h:outputText value="#{systemRole.name}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </td>
+                </tr>
+            </table>
+        </h:form>
+    </p:panel>
+</f:view>
+</html>

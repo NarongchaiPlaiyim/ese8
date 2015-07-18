@@ -1,0 +1,47 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:pe="http://primefaces.org/ui/extensions"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <h:outputScript library="js" name="custom.js" />
+    </h:head>
+    <div class="ui-grid ui-grid-responsive">
+        <div class="ui-grid-row">
+            <div class="ui-grid-col-2" />
+            <div class="ui-grid-col-2" >
+                <h:graphicImage library="images" name="/shared/DN2.png" />
+            </div>
+            <div class="ui-grid-col-2" />
+
+            <div class="ui-grid-col-3" />
+            <div class="ui-grid-col-3">
+                Name : #{headerBean.fullName}<br/><br/>
+                Role : <br/><br/>
+
+                    <p:commandButton id="btnEditProfile"
+                                     action="#{headerBean.onClickEdit()}"
+                                     styleClass="medium"
+                                     value="Change Password"/>
+                    <p:commandButton id="btnLogout"
+                                     action="#{headerBean.logout}"
+                                     styleClass="medium" style="#{msg.get('fix.size.150')}"
+                                     value="#{msg.get('btn.name.logout')}"/>
+
+            </div>
+        </div>
+    </div>
+
+    <pe:blockUI widgetVar="bui" centerX="true" centerY="true">
+        <p:panel style="border: 0">
+            <div style="text-align: center;">
+                <h:outputText value="Please wait..." />
+            </div>
+            <div style="text-align: right;">
+                <p:graphicImage value="/resources/images/shared/292.GIF"/>
+            </div>
+        </p:panel>
+    </pe:blockUI>
+</ui:composition>

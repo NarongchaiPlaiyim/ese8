@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    </h:head>
+       <h:form id="itemForm">
+           <table border="0">
+               <tr>
+                   <td>
+                       <table border="0">
+                           <tr>
+                               <td style="width: 160px">
+                                   <p:selectOneMenu id="selectType" value="#{setup.selectType}"
+                                                    style="#{msg.get('fix.size.200')}  margin-top: 4px">
+                                   <f:selectItem itemLabel="- Please Select -" itemValue=""/>
+                                   <f:selectItem itemLabel="Item Description" itemValue="3"/>
+                                   <f:selectItem itemLabel="Item Name" itemValue="1"/>
+                                   <f:selectItem itemLabel="Item Code" itemValue="2"/>
+                                   <p:ajax event="change" update=":itemForm:selectType"/>
+                                   </p:selectOneMenu>
+                               </td>
+                               <td>
+                                   <p:inputText id="itemSearch" style="#{msg.get('fix.size.200')}  margin-top: 4px"
+                                   value="#{setup.itemSearch}">
+                                   <p:ajax event="blur" update=":itemForm:itemSearch"/>
+                                   </p:inputText>
+                               </td>
+                           </tr>
+                       </table>
+                   </td>
+                   <td style="width: 80px">
+                       <p:commandButton icon="ui-icon-search"
+                                        value="#{msg.get('btn.name.search')}"
+                                        styleClass="medium" style="#{msg.get('btn.size')}"
+                       process="@this"
+                       onstart="PF('bui').block()"
+                       action="#{setup.onSearchItemWarehouse}"
+                       update=":itemForm:searchItemTable"
+                       oncomplete="PF('bui').unblock()"/>
+                   </td>
+                   <td style="width: 50px"/>
+                   <td>
+                       <table border="0">
+                           <tr>
+                               <td style="width: 150px; max-width: 150px; min-width: 150px">
+                                   <h:outputLabel value="Wherehouse :"/>
+                               </td>
+                               <td>
+                                   <p:inputText disabled="true" value="#{setup.locationView.warehouseModel.warehouseCode}" style="width: 80px; max-width: 80px; min-width: 80px"/>
+                               </td>
+                               <td>
+                                   <p:inputText disabled="true" value="#{setup.locationView.warehouseModel.warehouseName}" style="width: 120px; max-width: 120px; min-width: 120px"/>
+                               </td>
+                           </tr>
+                           <tr>
+                               <td>
+                                   <h:outputLabel value="Location :" style="width: 80px; max-width: 80px; min-width: 80px"/>
+                               </td>
+                               <td>
+                                   <p:inputText disabled="true" value="#{setup.locationView.locationBarcode}" style="width: 80px; max-width: 80px; min-width: 80px"/>
+                               </td>
+                               <td>
+                                   <p:inputText disabled="true" value="#{setup.locationView.locationName}" style="width: 120px; max-width: 120px; min-width: 120px"/>
+                               </td>
+                           </tr>
+                       </table>
+                   </td>
+               </tr>
+               <tr>
+                   <td colspan="2">
+                       <p:dataTable id="searchItemTable"
+                                   rowKey="#{item.id}"
+                                   var="item"
+                                   rows="3"
+                                   paginator="true"
+                                   selection="#{setup.selectItem}"
+                                   value="#{setup.msItemModelList}"
+                                   rowKet="#{item.id}">
+                           <p:column selectionMode="multiple" style="width:16px;text-align:center; height: 20px"/>
+                           <p:column headerText="Item Code" style="width: 70px; height: 20px">
+                               <h:outputText value="#{item.itemId}"/>
+                           </p:column>
+                           <p:column headerText="Descritions" style="height: 20px">
+                               <h:outputText value="#{item.DSGThaiItemDescription}"/>
+                           </p:column>
+                       </p:dataTable>
+                   </td>
+                   <td class="top">
+                       <table border="0">
+                           <tr>
+                               <td class="center">
+                                   <p:commandButton value="#{msg.get('btn.name.add')}"
+                                                    styleClass="medium" style="#{msg.get('btn.size')}"
+                                                    icon="ui-icon-seek-next"
+                                                    update=":msgBoxSystemMessagePanel, :itemForm, :itemForm:searchItemTable"
+                                                    action="#{setup.onAddToLocation}"
+                                                    />
+                               </td>
+                           </tr>
+                           <tr>
+                               <td>
+                                   <p:commandButton value="#{msg.get('btn.name.remove')}"
+                                                    styleClass="medium" style="#{msg.get('btn.size')}"
+                                                    icon="ui-icon-seek-prev"
+                                                    update=":msgBoxSystemMessagePanel, :itemForm:locationTable"
+                                                    action="#{setup.onRemove}"/>
+                               </td>
+                           </tr>
+                       </table>
+                   </td>
+                   <td colspan="2" class="top">
+                       <p:dataTable id="locationTable"
+                                   var="locationItem"
+                                   rows="3"
+                                   paginator="true"
+                                   selection="#{setup.selectLocationItem}"
+                                   value="#{setup.msLocationItemsModelList}"
+                                   rowKey="#{locationItem.id}">
+                       <p:column selectionMode="multiple" style="width:16px;text-align:center; height: 20px"/>
+                           <p:column headerText="Item Code" style="width: 70px; height: 20px">
+                               <h:outputText value="#{locationItem.msItemModel.itemId}"/>
+                           </p:column>
+                       <p:column headerText="Descritions" style="height: 20px">
+                           <h:outputText value="#{locationItem.msItemModel.DSGThaiItemDescription}"/>
+                       </p:column>
+                       </p:dataTable>
+                   </td>
+               </tr>
+           </table>
+       </h:form>
+</f:view>
+</html>

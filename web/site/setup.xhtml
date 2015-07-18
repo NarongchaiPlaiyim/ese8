@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>#{msg.get('menu.setup.title')}</title>
+</h:head>
+    <h:body>
+        <p:layout fullPage="true" id="layoutPanel">
+            <p:layoutUnit id="layoutTop" position="north" size="180" header="#{msg.get('header.north')}" collapsible="true" style="border: 0">
+                <ui:include src="#{msg.get('include.header')}"/>
+            </p:layoutUnit>
+            <p:layoutUnit id="layoutLeft" position="west" size="#{msg.get('layoutLeft.size')}" header="#{msg.get('header.west')}" collapsible="true" style="border: 0">
+                <ui:include src="#{msg.get('include.menu')}"/>
+            </p:layoutUnit>
+            <p:layoutUnit id="layoutCenter" position="center" header="#{msg.get('menu.setup.title')}" >
+                <h:form id="setupForm">
+                    <h:form id="mainForm" style="width: 100%;border-spacing: 0;">
+                    <p:tabView id="setupTab" cache="false" dynamic="false" style="border: 0">
+                    <p:tab id="warehouseTab" title="10.1 Warehouse and Location"
+                           rendered="#{loginBean.isRendered(msg.get('authorize.menu.setup.tab.1'))}"
+                            >
+                        <p:panel style="border: 0">
+                            <div style="text-align: right;">
+                                <h:outputText id="modeWarehouse" value="#{setup.modeWarehouse}"/>
+
+                                <p:commandButton id="btnNewLocation"
+                                                 value="#{setup.nameBtn}"
+                                                 rendered="#{loginBean.isRendered(msg.get('authorize.menu.setup.tab.1.new'))}"
+                                                 styleClass="medium" style="#{msg.get('btn.size')}"
+                                                 disabled="#{setup.flagBtnNewWarehouse}"
+                                                 update=":setupForm:mainForm:setupTab,
+                                                                 :setupForm:mainForm:setupTab:warehouseAndLocationTable"
+                                                 process="@form"
+                                                 onstart="PF('bui').block()"
+                                                 oncomplete="PF('bui').unblock()"
+                                                 action="#{setup.onClickNewOrCancelWarehouse}"/>
+
+                                <p:commandButton id="btnSaveLocation"
+                                                 value="Save"
+                                                 rendered="#{loginBean.isRendered(msg.get('authorize.menu.setup.tab.1.edit'))}"
+                                                 styleClass="medium" style="#{msg.get('btn.size')}"
+                                                 action="#{setup.onSaveWarehouse}"
+                                                 process="@form"
+                                                 icon="ui-icon-check"
+                                                 onstart="PF('bui').block()"
+                                                 oncomplete="PF('bui').unblock()"
+                                                 update=":setupForm:mainForm:setupTab:warehouseTab, :msgBoxSystemMessagePanel,
+                                                                 :setupForm:mainForm:setupTab:warehouseAndLocationTable,
+                                                                 :setupForm:mainForm:setupTab"
+                                                 binding="#{addWarehouseAndLocation}"/>
+
+                                <p:commandButton id="btnDelete"
+                                                 value="#{msg.get('btn.name.delete')}"
+                                                 rendered="#{loginBean.isRendered(msg.get('authorize.menu.setup.tab.1.delete'))}"
+                                                 styleClass="medium" style="#{msg.get('btn.size')}"
+                                                 process="@form"
+                                                 disabled="#{setup.flagBtnDelete}"
+                                                 action="#{setup.preDelete}"
+                                                 icon="ui-icon-trash"
+                                                 onstart="PF('bui').block()"
+                                                 oncomplete="PF('bui').unblock()"
+                                                 update=":confirmWarehouseAndLocationPanel, :msgBoxSystemMessagePanel"/>
+
+                            </div>
+                        </p:panel>
+                    <table border="0" style="width: 100%">
+                    <tr>
+                        <td>
+                            <table border="0" style="width: 100%">
+                                <tr >
+                                    <td style="min-width: 200px; width: 200px; max-width: 200px;" class="left" />
+                                    <td style="min-width: 200px; width: 200px; max-width: 200px;" class="left" />
+                                    <td style="min-width: 200px; width: 200px; max-width: 200px;" class="center" />
+                                    <td style="min-width: 200px; width: 200px; max-width: 200px;" class="left" />
+                                    <td style="min-width: 200px; width: 200px; max-width: 200px;" class="left" />
+                                    <td/>
+                                </tr>
+
+                                <tr>
+                                    <td >
+                                        <h:outputText value="Warehouse*"/>
+                                    </td>
+                                    <td >
+                                        <p:selectOneMenu id="warehouseMenu" value="#{setup.locationView.warehouseModel.id}"
+                                                         style="min-width: 200px; width: 200px; max-width: 200px;"
+                                                         required="#{not empty param[addWarehouseAndLocation.clientId]}">
+                                            <f:selectItem itemLabel="#{setup.locationView.warehouseModel.warehouseCode}"
+                                                          itemValue=""/>
+                                            <f:selectItems value="#{setup.msWarehouseModelList}"
+                                                           var="warehouseItem"
+                                                           itemLabel="#{warehouseItem.warehouseCode}"
+                                                           itemValue="#{warehouseItem.id}"/>
+                                            <p:ajax event="change" process="@form" update=":setupForm:mainForm:setupTab"/>
+                                        </p:selectOneMenu>
+                                    </td>
+                                    <td >
+                                        <p:commandButton id="btnNewEditWarehouse"
+                                                         value="#{msg.get('btn.name.new.edit')}"
+                                                         rendered="#{loginBean.isRendered(msg.get('authorize.menu.setup.tab.1.add.edit'))}"
+                                                         icon="ui-icon-folder-open"
+                                                         styleClass="medium" style="min-width: 160px; width: 160px; max-width: 160px;"
+                                                         disabled="#{setup.flagBtnAddEdit}"
+                                                         action="#{setup.onEditDialogWarehouse}"
+                                                         update=":warehouseDialogForm"
+                                                         oncomplete="PF('warehouseDlg').show()"/>
+                                    </td>
+                                    <td>
+                                        <table border="0" style="width: 100%">
+                                            <tr>
+                                                <td style="width: 20px">
+                                                    <h:selectBooleanCheckbox id="mixChkBox"
+                                                                             value="#{setup.locationView.mix}"/>
+                                                </td>
+                                                <td class="left">
+                                                    <h:outputLabel value="Is Mix"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td colspan="2">
+                                        <table border="0" style="width: 100%">
+                                            <tr>
+                                                <td style="width: 20px">
+                                                    <h:selectBooleanCheckbox id="foilChkBox"
+                                                                             disabled="#{setup.flagFoil}"
+                                                                             value="#{setup.locationView.foil}"/>
+                                                </td>
+                                                <td class="left">
+                                                    <h:outputLabel value="Is Foil"/>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td >
+                                        <h:outputText value="Location Code*"/>
+                                    </td>
+                                    <td colspan="2">
+                                        <p:inputText id="locationBarcode" style="min-width: 200px; width: 200px; max-width: 200px;"
+                                                     value="#{setup.locationView.locationBarcode}"
+                                                     required="#{not empty param[addWarehouseAndLocation.clientId]}"/>
+                                    </td>
+                                    <td >
+                                        <h:outputText value="Remark"/>
+                                    </td>
+                                    <td colspan="2">
+                                        <p:inputTextarea id="locationRemark" style="width: 250px; max-width: 250px;min-width: 250px; height: 50px;"
+                                                         value="#{setup.locationView.remark}"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td >
+                                        <h:outputText value="Location Name*"/>
+                                    </td>
+                                    <td colspan="5">
+                                        <p:inputText id = "locationName"
+                                                     style="min-width: 200px; width: 200px; max-width: 200px;"
+                                                     value="#{setup.locationView.locationName}"
+                                                     required="#{not empty param[addWarehouseAndLocation.clientId]}"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td >
+                                        <h:outputText value="Capacities (Pallets)"/>
+                                    </td>
+                                    <td >
+                                        <p:inputText id="capacity" style="min-width: 200px; width: 200px; max-width: 200px;"
+                                                     onkeydown="return onKeyDownMoney(event);"
+                                                     onkeypress="return onKeyPressMoney(event)"
+                                                     min="0"
+                                                     value="#{setup.locationView.capacity}">
+                                            <f:convertNumber pattern="##0"/>
+                                        </p:inputText>
+                                    </td>
+                                    <td class="center">
+                                        <div class="center">
+                                            <p:commandButton id="btnShowAddItem" value="#{msg.get('btn.name.show.add')}"
+                                                             rendered="#{loginBean.isRendered(msg.get('authorize.menu.setup.tab.1.show.add'))}"
+                                                             icon="ui-icon-folder-open"
+                                                             styleClass="medium" style="min-width: 160px; width: 160px; max-width: 160px;"
+                                                             disabled="#{setup.flagBtnAddShowItem}"
+                                                             action="#{setup.onClickAddItemWarehouse}"
+                                                             update=":itemForm"
+                                                             oncomplete="PF('itemDlg').show()">
+                                            </p:commandButton>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">
+                                        <p:inputText id="findKey" value="#{setup.keySearch}" style="#{msg.get('fix.size.200')}  margin-top: 4px"/>
+                                        <p:commandButton id="btnsearch" icon="ui-icon-search"
+                                                         value="#{msg.get('btn.name.search')}"
+                                                         styleClass="medium" style="#{msg.get('btn.size')}"
+                                                         onstart="PF('bui').block()"
+                                                         oncomplete="PF('bui').unblock()"
+                                                         process="@form"
+                                                         action="#{setup.onSearchWarehouseAndLocation}"
+                                                         update=":setupForm:mainForm:setupTab:warehouseAndLocationTable"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <p:dataTable id="warehouseAndLocationTable"
+                                         rowIndexVar="rowIndex"
+                                         var="location"
+                                         resizableColumns="true"
+                                         rowKey="#{location.id}"
+                                         value="#{setup.msLocationModelList}"
+                                         scrollable="true" scrollHeight="450"
+                                         selectionMode="single"
+                                         selection="#{setup.msLocationModel}"
+                                         styleClass="full_table">
+                                <p:ajax event="rowSelect"
+                                        listener="#{setup.onClickTableWarehouseAndLocation}"
+                                        update=":setupForm:mainForm:setupTab:modeWarehouse,
+                                                :setupForm:mainForm:setupTab:btnNewLocation,
+                                                :setupForm:mainForm:setupTab:btnSaveLocation,
+                                                :setupForm:mainForm:setupTab:warehouseMenu,
+                                                :setupForm:mainForm:setupTab:btnNewEditWarehouse,
+                                                :setupForm:mainForm:setupTab:mixChkBox,
+                                                :setupForm:mainForm:setupTab:foilChkBox,
+                                                :setupForm:mainForm:setupTab:locationBarcode,
+                                                :setupForm:mainForm:setupTab:locationRemark,
+                                                :setupForm:mainForm:setupTab:locationName,
+                                                :setupForm:mainForm:setupTab:capacity,
+                                                :setupForm:mainForm:setupTab:btnShowAddItem
+                                                :setupForm:mainForm:setupTab:btnDelete"/>
+                                <p:column headerText="No" style="width: 20px; min-width: 20px; max-width: 20px" styleClass="center">
+                                    <h:outputText value="#{rowIndex+1}"/>
+                                </p:column>
+                                <p:column headerText="Warehouse" style="width: 60px; min-width: 60px; max-width: 60px" styleClass="center">
+                                    <h:outputText value="#{location.msWarehouseModel.warehouseCode}"/>
+                                </p:column>
+                                <p:column headerText="Location Code" style="width: 60px; min-width: 60px; max-width: 60px" styleClass="center">
+                                    <h:outputText value="#{location.locationBarcode}"/>
+                                </p:column>
+                                <p:column headerText="Location Name" style="width: 60px; min-width: 60px; max-width: 60px" styleClass="center">
+                                    <h:outputText value="#{location.locationName}"/>
+                                </p:column>
+                                <p:column headerText="Capacities (Pallet)" style="width: 60px; min-width: 60px; max-width: 60px" styleClass="center">
+                                    <h:outputText value="#{location.capacity}"/>
+                                </p:column>
+                                <p:column headerText="Is Mix" style="width: 50px; background-color: #{location.isMix == 1 ? 'green' : 'red'};">
+                                    <h:outputText value=""/>
+                                </p:column>
+                                <p:column headerText="Is Foil" style="width: 50px; background-color: #{location.isFoil == 1 ? 'green' : 'red'};">
+                                    <h:outputText value=""/>
+                                </p:column>
+                                <p:column headerText="Remark" styleClass="center" style="width: 200px; min-width: 200px; max-width: 200px">
+                                    <h:outputText value="#{location.remark}" style="word-wrap:break-word;"/>
+                                </p:column>
+                            </p:dataTable>
+                        </td>
+                    </tr>
+                    </table>
+                    </p:tab>
+                    <p:tab id="stockInoutTag" title="10.2 Stock In Out Note"
+                           rendered="#{loginBean.isRendered(msg.get('authorize.menu.setup.tab.2'))}"
+                            >
+                        <p:panel style="border: 0">
+                            <div style="text-align: right;">
+                                <h:outputText id="mode" value="#{setup.modeStock}"/>
+
+                                <p:commandButton id="btnNew"
+                                                 value="#{setup.nameBtnStock}"
+                                                 rendered="#{loginBean.isRendered(msg.get('authorize.menu.setup.tab.2.new'))}"
+                                                 action="#{setup.OnNewStockInOutNote}"
+                                                 onstart="PF('bui').block()"
+                                                 oncomplete="PF('bui').unblock()"
+                                                 styleClass="medium" style="#{msg.get('btn.size')}"
+                                                 update=":setupForm:mainForm:setupTab
+                                                                                   :setupForm:mainForm:setupTab:stockInoutTable"/>
+
+                                <p:commandButton id="btnSave"
+                                                 value="#{msg.get('btn.name.save')}"
+                                                 rendered="#{loginBean.isRendered(msg.get('authorize.menu.setup.tab.2.edit'))}"
+                                                 action="#{setup.onSaveStockInOutNote}"
+                                                 styleClass="medium" style="#{msg.get('btn.size')}"
+                                                 onstart="PF('bui').block()"
+                                                 oncomplete="PF('bui').unblock()"
+                                                 process="@form"
+                                                 binding="#{addStockInOutNote}"
+                                                 icon="ui-icon-check"
+                                                 update=":msgBoxSystemMessagePanel,
+                                                                         :setupForm:mainForm:setupTab"/>
+
+                                <p:commandButton id="btnDeleteStock"
+                                                 value="#{msg.get('btn.name.delete')}"
+                                                 rendered="#{loginBean.isRendered(msg.get('authorize.menu.setup.tab.2.delete'))}"
+                                                 icon="ui-icon-trash"
+                                                 styleClass="medium" style="#{msg.get('btn.size')}"
+                                                 action="#{setup.preDeleteItem()}"
+                                                 onstart="PF('bui').block()"
+                                                 oncomplete="PF('bui').unblock()"
+                                                 update=":confirmStockInOutNotePanel"
+                                                 disabled="#{setup.flagBtnDeleteStock}" />
+
+                            </div>
+                        </p:panel>
+                        <table border="0" style="width: 100%">
+                            <tr>
+                                <td>
+
+                                    <table border="0" style="width: 100%">
+                                        <tr>
+                                            <td style="width: 30px" class="top" colspan="4">
+
+                                                <table border="0" style="width: 100%">
+                                                    <tr >
+                                                        <td style="min-width: 100px; width: 100px; max-width: 100px;" class="left" />
+                                                        <td style="min-width: 250px; width: 250px; max-width: 250px;" class="left" />
+                                                        <td style="min-width: 50px; width: 50px; max-width: 50px;" class="center" />
+                                                        <td style="min-width: 80px; width: 80px; max-width: 80px;" class="left" />
+                                                    </tr>
+                                                    <tr>
+                                                        <td >
+                                                            <h:outputText value="Type"/>
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <p:selectOneRadio id="typeRadio" styleClass="radio_table" style="background-origin: border-box"
+                                                                              value="#{setup.stockInOutNoteView.type}"
+                                                                              required="#{not empty param[addStockInOutNote.clientId]}">
+                                                                <f:selectItem itemLabel="Receiving" itemValue="i"/>
+                                                                <f:selectItem itemLabel="Issuing" itemValue="o"/>
+                                                                <f:selectItem itemLabel="Transfer" itemValue="t"/>
+                                                            </p:selectOneRadio>
+                                                        </td>
+                                                        <td >
+                                                            <h:outputText value="Remark"/>
+                                                        </td>
+                                                        <td colspan="1">
+                                                            <p:inputTextarea id="remark" style="width: 200px; max-width: 200px;min-width: 200px; height: 50px;"
+                                                                             value="#{setup.stockInOutNoteView.remark}"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <h:outputText value="Code"/>
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <p:inputText id="inoutCode" style="min-width: 200px; width: 200px; max-width: 200px;"
+                                                                         value="#{setup.stockInOutNoteView.inoutCode}"
+                                                                         required="#{not empty param[addStockInOutNote.clientId]}"/>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <h:outputText value="Note"/>
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <p:inputText id="inoutNote" style="min-width: 200px; width: 200px; max-width: 200px;"
+                                                                         value="#{setup.stockInOutNoteView.inoutNote}"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6">
+                                                <p:dataTable id="stockInoutTable"
+                                                             var="stockInOutNote"
+                                                             rowKey="#{stockInOutNote.id}"
+                                                             value="#{setup.stockInOutNoteModelList}"
+                                                             scrollable="true" scrollHeight="450"
+                                                             selectionMode="single"
+                                                             resizableColumns="true"
+                                                             selection="#{setup.stockInOutNoteModel}"
+                                                             rowIndexVar="rowIndex2">
+                                                    <p:ajax event="rowSelect"
+                                                            listener="#{setup.onClickTableStockInOutNote}"
+                                                            update=":setupForm:mainForm:setupTab:typeRadio,
+                                                                    :setupForm:mainForm:setupTab:mode,
+                                                                    :setupForm:mainForm:setupTab:btnNew,
+                                                                    :setupForm:mainForm:setupTab:btnSave,
+                                                                    :setupForm:mainForm:setupTab:remark,
+                                                                    :setupForm:mainForm:setupTab:inoutCode,
+                                                                    :setupForm:mainForm:setupTab:inoutNote,
+                                                                    :setupForm:mainForm:setupTab:btnDeleteStock"/>
+                                                    <p:column headerText="No" style="width: 20px" styleClass="center">
+                                                        <h:outputText value="#{rowIndex2+1}"/>
+                                                    </p:column>
+                                                    <p:column headerText="Type" style="width: 200px" styleClass="center">
+                                                        <h:outputText value="#{stockInOutNote.type == 'i' ? 'Receiving' : 'Issuing'}"/>
+                                                    </p:column>
+                                                    <p:column headerText="Code" style="width: 200px" styleClass="center">
+                                                        <h:outputText value="#{stockInOutNote.inoutCode}"/>
+                                                    </p:column>
+                                                    <p:column headerText="Note" styleClass="center">
+                                                        <h:outputText value="#{stockInOutNote.inoutNote}"/>
+                                                    </p:column>
+                                                    <p:column headerText="Remark" styleClass="center">
+                                                        <h:outputText value="#{stockInOutNote.remark}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </p:tab>
+                    </p:tabView>
+                    </h:form>
+                </h:form>
+            </p:layoutUnit>
+        </p:layout>
+
+        <ui:include src="/site/dialog/confirmDeleteDlg.xhtml">
+            <ui:param name="id" value="confirmDeleteWarehouseDialog"/>
+            <ui:param name="name" value="confirmDeleteWarehouseDlg"/>
+            <ui:param name="formId" value="frmConfirmDeleteWarehouse"/>
+            <ui:param name="controller" value="#{setup}"/>
+            <ui:param name="action" value="onClickDeleteButtonTAB"/>
+            <!--<ui:param name="update" value=":setupForm:warehouseAndLocationTable"/>-->
+        </ui:include>
+
+        <p:dialog id="warehouseDialog" widgetVar="warehouseDlg" header="Add/Edit Warehouse"
+                  onShow="hideWindowsScrollBar()" onHide="showWindowsScrollBar()" resizable="false"
+                  modal="true" width="1000" height="450">
+            <ui:include src="../site/dialog/warehouseDialog.xhtml"/>
+        </p:dialog>
+        <p:dialog id="itemDialog" widgetVar="itemDlg" header="Add Item to Location"
+                  onShow="hideWindowsScrollBar()" onHide="showWindowsScrollBar()" resizable="false"
+                  modal="true" width="1300" height="450">
+            <ui:include src="../site/dialog/itemDialog.xhtml"/>
+        </p:dialog>
+        <p:panel id="msgBoxSystemMessagePanel" style="border: 0">
+            <p:confirmDialog id="msgBoxSystemMessageDialog" widgetVar="msgBoxSystemMessageDlg" width="#{msg.get('dialog.message.size')}" closable="false"
+                             header="#{setup.messageHeader}" message="#{setup.message}" >
+                <div style="text-align: right">
+                    <p:commandButton value="#{msg.get('btn.name.ok')}"
+                                     styleClass="medium" style="#{msg.get('btn.size')}"
+                                     icon="ui-icon-check"
+                                     process="@this"
+                                     update="setupForm"
+                                     oncomplete="PF('msgBoxSystemMessageDlg').hide()"/>
+                </div>
+            </p:confirmDialog>
+            <!--<p:dialog header="#{setup.messageHeader}" widgetVar="msgBoxSystemMessageDlg" width="#{msg.get('dialog.message.size')}" closable="false" resizable="false">-->
+                <!--<h:outputText value="#{setup.message}" />-->
+            <!--</p:dialog>-->
+        </p:panel>
+
+        <p:panel id="confirmWarehouseAndLocationPanel" style="border: 0">
+            <p:confirmDialog id="confirmWarehouseAndLocationDialog" widgetVar="confirmWarehouseAndLocationDlg" width="#{msg.get('dialog.message.size')}"
+                             closable="false"
+                             header="#{setup.messageHeader}" message="#{setup.message}" >
+                <div style="text-align: right">
+                    <p:commandButton value="#{msg.get('btn.name.ok')}" action="#{setup.onDeleteWarehouseAndLocation()}"
+                                     process="@this" update=":setupForm:mainForm:setupTab, :msgBoxSystemMessagePanel"
+                                     styleClass="medium" style="#{msg.get('btn.size')}"
+                                     icon="ui-icon-check"
+                                     oncomplete="PF('confirmWarehouseAndLocationDlg').hide()"/>
+                    <p:commandButton value="#{msg.get('btn.name.cancel')}"
+                                     process="@this"
+                                     update=":setupForm:mainForm:setupTab"
+                                     styleClass="medium" style="#{msg.get('btn.size')}"
+                                     icon="ui-icon-cancel"
+                                     oncomplete="PF('confirmWarehouseAndLocationDlg').hide()"/>
+                </div>
+            </p:confirmDialog>
+        </p:panel>
+
+        <p:panel id="confirmStockInOutNotePanel" style="border: 0">
+            <p:confirmDialog id="confirmStockInOutNoteDialog" widgetVar="confirmStockInOutNoteDlg" width="#{msg.get('dialog.message.size')}"
+                             closable="false"
+                             header="#{setup.messageHeader}" message="#{setup.message}" >
+                <div style="text-align: right">
+                    <p:commandButton value="#{msg.get('btn.name.ok')}" action="#{setup.onDeleteStockInOutNote()}"
+                                     process="@this" update=":setupForm:mainForm:setupTab, :msgBoxSystemMessagePanel"
+                                     styleClass="medium" style="#{msg.get('btn.size')}"
+                                     icon="ui-icon-check"
+                                     oncomplete="PF('confirmStockInOutNoteDlg').hide()"/>
+                    <p:commandButton value="#{msg.get('btn.name.cancel')}"
+                                     process="@this"
+                                     update=":setupForm:mainForm:setupTab"
+                                     styleClass="medium" style="#{msg.get('btn.size')}"
+                                     icon="ui-icon-cancel"
+                                     oncomplete="PF('confirmStockInOutNoteDlg').hide()"/>
+                </div>
+            </p:confirmDialog>
+        </p:panel>
+
+        <p:panel id="confirmWarehouseDialogPanel" style="border: 0">
+            <p:confirmDialog id="confirmWarehouseDialogDialog" widgetVar="confirmWarehouseDialogDlg" width="#{msg.get('dialog.message.size')}"
+                             closable="false"
+                             header="#{setup.messageHeader}" message="#{setup.message}" >
+                <div style="text-align: right">
+                    <p:commandButton value="#{msg.get('btn.name.ok')}" action="#{setup.onDeleteWarehouseDialog()}"
+                                     process="@this" update=":warehouseDialogForm, :msgBoxSystemMessagePanel"
+                                     styleClass="medium" style="#{msg.get('btn.size')}"
+                                     icon="ui-icon-check"
+                                     oncomplete="PF('confirmWarehouseDialogDlg').hide()"/>
+                    <p:commandButton value="#{msg.get('btn.name.cancel')}"
+                                     process="@this"
+                                     update=":warehouseDialogForm"
+                                     styleClass="medium" style="#{msg.get('btn.size')}"
+                                     icon="ui-icon-cancel"
+                                     oncomplete="PF('confirmWarehouseDialogDlg').hide()"/>
+                </div>
+            </p:confirmDialog>
+        </p:panel>
+    </h:body>
+</f:view>
+</html>

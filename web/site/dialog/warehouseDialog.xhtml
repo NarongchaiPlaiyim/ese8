@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+    <h:head>
+    </h:head>
+    <h:form id="warehouseDialogForm">
+
+        <p:panel style="border: 0">
+            <div style="text-align: right;">
+                <h:outputText value="#{setup.modeWarehouseDlg}"/>
+
+                <p:commandButton value="#{msg.get('btn.name.new')}"
+                                 styleClass="medium" style="#{msg.get('btn.size')}"
+                                 update=":warehouseDialogForm, :warehouseDialogForm:warehouseTable"
+                                 action="#{setup.onNewWarehouseDialog}"/>
+
+                <p:commandButton value="#{msg.get('btn.name.save')}"
+                                 styleClass="medium" style="#{msg.get('btn.size')}"
+                                 update=":msgBoxSystemMessagePanel, :warehouseDialogForm
+                                                         :warehouseDialogForm:warehouseTable"
+                                 action="#{setup.onSaveWarehouseDialog}"
+                                 binding="#{warehouseDialog}"/>
+
+                <p:commandButton value="#{msg.get('btn.name.delete')}"
+                                 styleClass="medium" style="#{msg.get('btn.size')}"
+                                 update=":msgBoxSystemMessagePanel, :warehouseDialogForm, :confirmWarehouseDialogPanel"
+                                 action="#{setup.preDeleteWarehouseDialog}"
+                        />
+            </div>
+        </p:panel>
+        <table border="0" class="content_table_form">
+            <tr>
+                <td>
+                    <table border="0">
+
+                        <tr >
+                            <td style="min-width: 100px; width: 100px; max-width: 100px;" class="left" />
+                            <td style="min-width: 200px; width: 200px; max-width: 200px;" class="left" />
+                            <td style="min-width: 100px; width: 100px; max-width: 100px;" class="center" />
+                            <td style="min-width: 150px; width: 150px; max-width: 150px;" class="left" />
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <h:outputLabel value="Warehouse Code"/>
+                            </td>
+                            <td>
+                                <p:inputText style="min-width: 150px; width: 150px; max-width: 150px;"
+                                             value="#{setup.warehouseView.warehouseCode}"
+                                             required="#{not empty param[warehouseDialog.clientId]}"/>
+                            </td>
+                            <td>
+                                <h:outputLabel value="Warehouse Name"/>
+                            </td>
+                            <td>
+                                <p:inputText style="min-width: 150px; width: 150px; max-width: 150px;"
+                                             value="#{setup.warehouseView.warehouseName}"
+                                             required="#{not empty param[warehouseDialog.clientId]}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h:outputLabel value="Remark"/>
+                            </td>
+                            <td colspan="3">
+                                <p:inputTextarea style="width: 200px; max-width: 200px;min-width: 200px; height: 50px;"
+                                                 value="#{setup.warehouseView.remark}"/>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <p:dataTable id="warehouseTable"
+                                 var="warehouse"
+                                 rowKey="#{warehouse.id}"
+                                 value="#{setup.msWarehouseModelList}"
+                                 rows="7"
+                                 paginator="true"
+                                 selectionMode="single"
+                                 selection="#{setup.msWarehouseModel}"
+                                 rowIndexVar="rowIndex">
+                        <p:ajax event="rowSelect"
+                                listener="#{setup.onClickTableWarehouseDialog}"
+                                update=":warehouseDialogForm, :warehouseDialogForm:warehouseTable"/>
+                        <p:column headerText="No" style="width: 20px" styleClass="center">
+                            <h:outputText value="#{rowIndex+1}"/>
+                        </p:column>
+                        <p:column headerText="warehouse ID" styleClass="center">
+                            <h:outputText value="#{warehouse.warehouseCode}"/>
+                        </p:column>
+                        <p:column headerText="warehouse Name" styleClass="center">
+                            <h:outputText value="#{warehouse.warehouseName}"/>
+                        </p:column>
+                        <p:column headerText="Remark" styleClass="center">
+                            <h:outputText value="#{warehouse.remark}"/>
+                        </p:column>
+                    </p:dataTable>
+                </td>
+            </tr>
+        </table>
+    </h:form>
+</f:view>
+</html>

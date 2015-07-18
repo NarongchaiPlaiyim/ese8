@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>#{msg.get('menu.edit.title')}</title>
+    </h:head>
+        <h:body>
+            <p:layout fullPage="true" id="layoutPanel">
+            <p:layoutUnit id="layoutTop" position="north" size="180" header="#{msg.get('header.north')}" collapsible="true" style="border: 0">
+                <ui:insert name="header">
+                    <ui:include src="#{msg.get('include.header')}"/>
+                </ui:insert>
+            </p:layoutUnit>
+            <p:layoutUnit id="layoutLeft" position="west" size="#{msg.get('layoutLeft.size')}" header="#{msg.get('header.west')}" collapsible="true" style="border: 0">
+                <ui:include src="#{msg.get('include.menu')}"/>
+            </p:layoutUnit>
+
+            <p:layoutUnit id="layoutCenter" position="center" header="#{msg.get('menu.edit.title')}" >
+                <h:form id="addUserHeaderForm">
+                    <table border="0">
+                        <tr>
+                            <td style="#{msg.get('fix.size.200')}">
+                                <h:outputLabel value="Department"/>
+                            </td>
+                            <td style="#{msg.get('fix.size.200')}">
+                                <p:inputText disabled="#{true}" value="#{headerBean.userView.factionModel.msDepartmentModel.name}" style="#{msg.get('fix.size.200')}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="#{msg.get('fix.size.200')}">
+                                <h:outputLabel value="Faction"/>
+                            </td>
+                            <td style="#{msg.get('fix.size.200')}">
+                                <p:inputText disabled="#{true}" value="#{headerBean.userView.factionModel.name}" style="#{msg.get('fix.size.200')}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="#{msg.get('fix.size.200')} ">
+                                <h:outputLabel value="Position"/>
+                            </td>
+                            <td>
+                                <p:inputText disabled="#{true}" value="#{headerBean.userView.position}" style="#{msg.get('fix.size.200')}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="#{msg.get('fix.size.200')}">
+                                <h:outputLabel value="Title Name"/>
+                            </td>
+                            <td style="#{msg.get('fix.size.200')}">
+                                <p:inputText disabled="#{true}" value="#{headerBean.userView.msTitleModel.name}" style="#{msg.get('fix.size.200')}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="#{msg.get('fix.size.200')}">
+                                <h:outputLabel value="Name"/>
+                            </td>
+                            <td class="left">
+                                <p:inputText disabled="#{true}" value="#{headerBean.userView.name}" style="#{msg.get('fix.size.200')}"/>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td style="#{msg.get('fix.size.200')}">
+                                <h:outputLabel value="Login name"/>
+                            </td>
+                            <td>
+                                <p:inputText disabled="#{true}" value="#{headerBean.userView.username}" style="#{msg.get('fix.size.200')}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="#{msg.get('fix.size.200')}">
+                                <h:outputLabel for="pwd1Header" value="Password"/>
+                            </td>
+                            <td>
+                                <p:password id="pwd1Header"
+                                            value="#{headerBean.userView.password}"
+                                            match="pwd2Header"
+                                            required="#{not empty param[addUserAccess.clientId]}"
+                                            redisplay = "true"
+                                            style="#{msg.get('fix.size.200')}"
+                                            label="Password">
+                                    <f:validateLength minimum="5" maximum="8"/>
+                                </p:password>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="#{msg.get('fix.size.200')} ">
+                                <h:outputLabel for="pwd2Header" value="Re-Password"/>
+                            </td>
+                            <td>
+                                <p:password id="pwd2Header" value="#{headerBean.userView.password}"
+                                            label="Re-Password"
+                                            redisplay = "true"
+                                            style="#{msg.get('fix.size.200')}"
+                                            required="#{not empty param[addUserAccess.clientId]}">
+                                    <f:validateLength minimum="5" maximum="8"/>
+                                </p:password>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="6">
+                                <div style="text-align: right;">
+                                    <p:commandButton value="#{msg.get('btn.name.save')}"
+                                                     id="btnSaveHeader"
+                                                     styleClass="medium" style="#{msg.get('btn.size')}"
+                                                     icon="ui-icon-check"
+                                                     binding="#{addUserAccess}"
+                                                     process="@form"
+                                                     update=":addUserHeaderForm, :msgBoxSystemMessagePanel"
+                                                     action="#{headerBean.onClickSave}"/>
+                                    <p:commandButton value="Refresh"
+                                                     id="btnCancelHeader"
+                                                     type="reset"
+                                                     icon="ui-icon-refresh"
+                                                     styleClass="medium" style="#{msg.get('btn.size')}"
+                                                     update=":addUserHeaderForm"/>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </h:form>
+            </p:layoutUnit>
+
+            </p:layout>
+
+            <p:panel id="msgBoxSystemMessagePanel" style="border: 0">
+                <p:confirmDialog id="msgBoxSystemMessageDialog" widgetVar="msgBoxSystemMessageDlg" width="#{msg.get('dialog.message.size')}" closable="false"
+                                 header="#{headerBean.messageHeader}" message="#{headerBean.message}" >
+                    <div style="text-align: right">
+                        <p:commandButton value="#{msg.get('btn.name.ok')}"
+                                         update=":addUserHeaderForm"
+                                         icon="ui-icon-check"
+                                         styleClass="medium" style="#{msg.get('btn.size')}"
+                                         oncomplete="PF('msgBoxSystemMessageDlg').hide()"/>
+                    </div>
+                </p:confirmDialog>
+            </p:panel>
+
+        </h:body>
+    </f:view>
+</html>
