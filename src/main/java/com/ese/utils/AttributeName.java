@@ -9,7 +9,7 @@ public enum AttributeName {
     AUTHORIZE("authorize");
 
     private String name;
-    private AttributeName(String name) {
+    AttributeName(String name) {
         this.name = name;
     }
 }

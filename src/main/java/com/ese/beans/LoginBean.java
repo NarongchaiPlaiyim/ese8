@@ -26,8 +26,8 @@ import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -44,20 +44,22 @@ public class LoginBean extends Bean{
     private String userName = "";
     private String password = "";
     private UserDetail userDetail;
-    private Map<String,String> map;
+    private Set set;
 
     @PostConstruct
     private void init(){
-        map = new HashMap();
+        set = new HashSet<>();
         if(!Utils.isNull(SecurityContextHolder.getContext().getAuthentication())){
             userDetail = (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            map = (Map<String, String>) FacesUtil.getSession().getAttribute(AttributeName.AUTHORIZE.getName());
+            set = (Set)FacesUtil.getSession().getAttribute(AttributeName.AUTHORIZE.getName());
         }
     }
 
     public String login(){
         log.info("-- SessionRegistry principle size: {}", sessionRegistry.getAllPrincipals().size());
-        if(!Utils.isZero(userName.length()) && !Utils.isZero(password.length())) {
+        if(!Utils.isZero(userName.length()) &&
+           !Utils.isZero(password.length())) {
+
             setPassword(EncryptionService.encryption(password));
             if(loginService.isUserExist(getUserName(), getPassword())){
                 StaffModel staffModel = loginService.getStaffModel();
@@ -76,7 +78,7 @@ public class LoginBean extends Bean{
                 log.debug("-- authentication result: {}", result.toString());
                 SecurityContextHolder.getContext().setAuthentication(result);
                 compositeSessionAuthenticationStrategy.onAuthentication(request, httpServletRequest, httpServletResponse);
-                HttpSession httpSession = FacesUtil.getSession(false);
+                HttpSession httpSession = FacesUtil.getSession();
                 httpSession.setAttribute(AttributeName.USER_DETAIL.getName(), getUserDetail());
                 httpSession.setAttribute(AttributeName.AUTHORIZE.getName(), loginService.getAuthorize());
                 httpSession.setAttribute(AttributeName.STAFF.getName(), staffModel.getId());
@@ -89,12 +91,8 @@ public class LoginBean extends Bean{
     }
 
     public boolean isRendered(String key){
-        try {
-            return map.containsKey(key);
-        } catch (Exception e) {
-            log.error("Exception : {}", e);
-            return false;
-        }
+        log.debug("KEY : {} : RESULT : {}", key, set.contains(key));
+        return set.contains(key);
     }
 
     public void test(){

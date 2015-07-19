@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 
 import javax.faces.bean.ManagedProperty;
 import java.io.Serializable;
-import java.util.Map;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -86,9 +86,9 @@ public abstract class Bean implements Serializable {
     protected boolean isAuthorize(String key){
         boolean result = Boolean.FALSE;
         try {
-            Map<String,String> map = (Map<String, String>) FacesUtil.getSession()
-                                                                    .getAttribute(AttributeName.AUTHORIZE.getName());
-            if(!map.containsKey(key)){
+            Set set = (Set) FacesUtil.getSession()
+                                     .getAttribute(AttributeName.AUTHORIZE.getName());
+            if(!set.contains(key)){
                 FacesUtil.redirect(NamesUtil.MAIN_PAGE.getName());
             }
             result = !result;
