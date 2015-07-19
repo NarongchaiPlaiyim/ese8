@@ -55,9 +55,10 @@ public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDA
         return staffModels;
     }
 
+    @Override
     public List<StaffModel> findUserBySearch(int departmentId, int factionId, String keySearch) {
         log.debug("departmentId : {}, factionId : {}, keySearch : {}", departmentId, factionId, keySearch);
-        List<StaffModel> staffModels = Utils.getEmptyList();
+        List<StaffModel> staffModelList = Utils.getEmptyList();
         try {
             Criteria criteria = getSession().createCriteria(StaffModel.class, "s");
             criteria.add(Restrictions.eq("isValid", 1));
@@ -79,28 +80,28 @@ public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDA
             }
 
             criteria.addOrder(Order.asc("d.id"));
-            staffModels = Utils.safetyList(criteria.list());
+            staffModelList = Utils.safetyList(criteria.list());
         } catch (Exception e) {
             log.debug("Exception error findUserByIsValid : ", e);
         }
-
-        return staffModels;
+        return staffModelList;
     }
 
+    @Override
     public void deleteByUpdate(StaffModel model) throws Exception{
         model.setIsValid(0);
         model.setUpdateDate(Utils.currentDate());
         update(model);
     }
 
+    @Override
     public StaffModel findByUserName(String userName) throws Exception {
-        return (StaffModel) getCriteria().add(Restrictions.and(
-                Restrictions.eq("username", userName)
-        )).uniqueResult();
+        return findOneByCriteria(Restrictions.eq("username", userName));
     }
 
+    @Override
     public List<UserAndRoleViewReport> genSQLReportUserAndRole(){
-        List<UserAndRoleViewReport> reportViews = new ArrayList<UserAndRoleViewReport>();
+        List<UserAndRoleViewReport> reportViews = new ArrayList();
         StringBuilder sqlBuilder = new StringBuilder();
 
         sqlBuilder.append(" SELECT ");

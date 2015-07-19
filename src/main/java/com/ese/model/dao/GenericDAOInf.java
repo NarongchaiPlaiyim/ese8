@@ -25,7 +25,5 @@ public interface GenericDAOInf<T, ID extends Serializable> {
     List<T> saveOrUpdate(List<T> entityList) throws Exception;
 
     Criteria getCriteria() throws Exception;
-
-
     boolean isRecordExist(Criterion... criterion) throws Exception;
 }

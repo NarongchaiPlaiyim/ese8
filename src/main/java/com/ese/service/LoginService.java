@@ -40,18 +40,6 @@ public class LoginService extends Service{
         return result;
     }
 
-//    public Map<String, String> getAuthorize(){
-//        List<String> stringList;
-//        Map<String, String> map = new HashMap();
-//        try {
-//            stringList = menuObjectDAO.findByStaffId(staffModel.getId());
-//            for (String s : stringList) map.put(s, s);
-//        } catch (Exception e) {
-//            log.error("Exception while calling getAuthorize()", e);
-//        }
-//        return map;
-//    }
-
     public Set<String> getAuthorize(){
         Set set = new HashSet<>();
         try {

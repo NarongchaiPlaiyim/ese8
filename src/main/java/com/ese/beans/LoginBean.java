@@ -50,7 +50,9 @@ public class LoginBean extends Bean{
     private void init(){
         set = new HashSet<>();
         if(!Utils.isNull(SecurityContextHolder.getContext().getAuthentication())){
-            userDetail = (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            userDetail = (UserDetail) SecurityContextHolder.getContext()
+                                                           .getAuthentication()
+                                                           .getPrincipal();
             set = (Set)FacesUtil.getSession().getAttribute(AttributeName.AUTHORIZE.getName());
         }
     }
@@ -91,7 +93,6 @@ public class LoginBean extends Bean{
     }
 
     public boolean isRendered(String key){
-        log.debug("KEY : {} : RESULT : {}", key, set.contains(key));
         return set.contains(key);
     }
 
