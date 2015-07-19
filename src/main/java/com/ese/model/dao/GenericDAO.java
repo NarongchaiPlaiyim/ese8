@@ -57,8 +57,6 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
         for (Criterion c : criterion) {
             criteria.add(c);
         }
-
-        criteria.list();
         return Utils.safetyList(criteria.list());
     }
 
@@ -82,8 +80,7 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
                     sessionFactory
                             .getCurrentSession()
                             .persist(entity);
-                }
-        );
+                });
     }
 
     @Override
@@ -98,8 +95,7 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
                     sessionFactory
                             .getCurrentSession()
                             .update(entity);
-                }
-        );
+                });
         return entityList;
     }
 
@@ -115,11 +111,9 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
                     sessionFactory
                             .getCurrentSession()
                             .saveOrUpdate(entity);
-                }
-        );
+                });
         return entityList;
     }
-
 
     @Override
     public void delete(T entity) throws Exception {
@@ -132,8 +126,7 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
                     sessionFactory
                             .getCurrentSession()
                             .delete(entity);
-                }
-        );
+                });
     }
 
     @Override
@@ -142,8 +135,8 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
     }
 
     @Override
-    public boolean isRecordExist(Criterion... criterions) throws Exception {
-        return findByCriteria(criterions).stream().count() > 0;
+    public boolean isRecordExist(Criterion... criterion) throws Exception {
+        return findByCriteria(criterion).stream().count() > 0;
     }
 
     protected void flush() throws Exception {

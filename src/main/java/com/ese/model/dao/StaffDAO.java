@@ -24,16 +24,13 @@ public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDA
                                                           .add(Restrictions.eq("password", password))
                                                           .add(Restrictions.eq("isValid", 1))
                                                           .uniqueResult();
-
         return staffModel;
     }
 
     @Override
     public boolean isUsernameExist(String userName) throws Exception {
-        return  !Utils.isNull(getCriteria().add(Restrictions.and(
-                Restrictions.eq("username", userName),
-                Restrictions.eq("isValid", 1)
-        )).uniqueResult());
+        return isRecordExist(Restrictions.eq("username", userName),
+                             Restrictions.eq("username", userName));
     }
 
     public List<StaffModel> test() throws Exception {
@@ -41,6 +38,7 @@ public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDA
         return findBySQL("SELECT * FROM dbo.staff", "3", 5, 6);
     }
 
+    @Override
     public List<StaffModel> findUserByIsValid(){
         List<StaffModel> staffModels = Utils.getEmptyList();
         try {
@@ -57,7 +55,7 @@ public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDA
         return staffModels;
     }
 
-    public List<StaffModel> findUserBySearch(int departmentId, int factionId, String keySearch){
+    public List<StaffModel> findUserBySearch(int departmentId, int factionId, String keySearch) {
         log.debug("departmentId : {}, factionId : {}, keySearch : {}", departmentId, factionId, keySearch);
         List<StaffModel> staffModels = Utils.getEmptyList();
         try {
