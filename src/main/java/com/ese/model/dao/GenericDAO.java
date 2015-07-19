@@ -16,7 +16,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
-public abstract class GenericDAO<T, ID extends Serializable> implements Serializable{
+public abstract class GenericDAO<T, ID extends Serializable> implements GenericDAOInf<T, ID>, Serializable{
     @Resource private SessionFactory sessionFactory;
     @Resource protected Logger log;
     @Resource protected Logger moLogger;
@@ -41,67 +41,113 @@ public abstract class GenericDAO<T, ID extends Serializable> implements Serializ
         return sessionFactory.getCurrentSession();
     }
 
+    @Override
+    public T findByID(ID id) throws Exception {
+        return (T) getSession().load(getEntityClass(), id);
+    }
+
+    @Override
+    public List<T> findAll() throws Exception {
+        return findByCriteria();
+    }
+
+    @Override
+    public List<T> findByCriteria(Criterion... criterion) throws Exception {
+        Criteria criteria = getCriteria();
+        for (Criterion c : criterion) {
+            criteria.add(c);
+        }
+
+        criteria.list();
+        return Utils.safetyList(criteria.list());
+    }
+
+    @Override
+    public T findOneByCriteria(Criterion... criterion) throws Exception {
+        Criteria criteria = getCriteria();
+        for (Criterion c : criterion) {
+            criteria.add(c);
+        }
+        return (T) criteria.uniqueResult();
+    }
+
+    @Override
     public void persist(T entity) throws Exception {
         getSession().persist(entity);
     }
 
+    @Override
     public void persist(List<T> entityList) throws Exception {
         entityList.forEach(entity -> {
-                    sessionFactory.getCurrentSession()
-                                  .persist(entity);
+                    sessionFactory
+                            .getCurrentSession()
+                            .persist(entity);
                 }
         );
     }
 
+    @Override
     public T update(T entity) throws Exception {
         getSession().update(entity);
         return entity;
     }
 
+    @Override
+    public List<T>  update(List<T> entityList) throws Exception {
+        entityList.forEach(entity -> {
+                    sessionFactory
+                            .getCurrentSession()
+                            .update(entity);
+                }
+        );
+        return entityList;
+    }
+
+    @Override
     public T saveOrUpdate(T entity) throws Exception {
         getSession().saveOrUpdate(entity);
         return entity;
     }
 
-    public T findByID(ID id) throws Exception {
-        return (T) getSession().load(getEntityClass(), id);
+    @Override
+    public List<T> saveOrUpdate(List<T> entityList) throws Exception {
+        entityList.forEach(entity -> {
+                    sessionFactory
+                            .getCurrentSession()
+                            .saveOrUpdate(entity);
+                }
+        );
+        return entityList;
     }
 
-    public List<T> findAll() throws Exception {
-        return findByCriteria();
-    }
 
-    protected List<T> findByCriteria(Criterion... criterions) throws Exception {
-        Criteria crit = getCriteria();
-//        crit.setMaxResults(1000);
-        for (Criterion c : criterions) {
-            crit.add(c);
-        }
-        return Utils.safetyList(crit.list());
-    }
-
+    @Override
     public void delete(T entity) throws Exception {
         getSession().delete(entity);
     }
 
+    @Override
     public void delete(List<T> entityList) throws Exception {
         entityList.forEach(entity -> {
-                    sessionFactory.getCurrentSession()
+                    sessionFactory
+                            .getCurrentSession()
                             .delete(entity);
                 }
         );
     }
 
-    protected Criteria getCriteria() throws Exception {
+    @Override
+    public Criteria getCriteria() throws Exception {
         return getSession().createCriteria(getEntityClass());
+    }
+
+    @Override
+    public boolean isRecordExist(Criterion... criterions) throws Exception {
+        return findByCriteria(criterions).stream().count() > 0;
     }
 
     protected void flush() throws Exception {
         getSession().flush();
-    }
-
-    public boolean isRecordExist(Criterion... criterions) throws Exception {
-        return findByCriteria(criterions).stream().count() > 0;
     }
 
     protected List<T> findBySQL(String sql, Object... params) throws Exception {

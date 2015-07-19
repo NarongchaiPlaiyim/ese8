@@ -6,6 +6,7 @@ import com.ese.model.db.MenuObjectModel;
 import com.ese.model.db.StaffModel;
 import com.ese.utils.Utils;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class LoginService extends Service{
     private static final long serialVersionUID = 4112578634088874840L;
-    @Resource private StaffDAO staffDAO;
+    @Autowired private StaffDAO staffDAO;
     @Resource private MenuObjectDAO menuObjectDAO;
 
     @Getter StaffModel staffModel;

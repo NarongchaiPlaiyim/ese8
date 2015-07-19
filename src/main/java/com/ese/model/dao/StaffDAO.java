@@ -16,15 +16,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class StaffDAO extends GenericDAO<StaffModel, Integer>{
+public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDAOInf<StaffModel, Integer>{
 
+    @Override
     public StaffModel findByUserNameAndPassword(String userName, String password) throws Exception {
-        return (StaffModel) getCriteria().add(Restrictions.and(
-                Restrictions.eq("username", userName),
-                Restrictions.eq("password", password))
-        ).add(Restrictions.eq("isValid", 1)).uniqueResult();
+        StaffModel staffModel = (StaffModel) getCriteria().add(Restrictions.eq("username", userName))
+                                                          .add(Restrictions.eq("password", password))
+                                                          .add(Restrictions.eq("isValid", 1))
+                                                          .uniqueResult();
+
+        return staffModel;
     }
 
+    @Override
     public boolean isUsernameExist(String userName) throws Exception {
         return  !Utils.isNull(getCriteria().add(Restrictions.and(
                 Restrictions.eq("username", userName),
