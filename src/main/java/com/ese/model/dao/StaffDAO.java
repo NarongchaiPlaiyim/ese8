@@ -146,14 +146,15 @@ public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDA
             objects.stream().forEach(entity -> {
                         UserAndRoleViewReport report = new UserAndRoleViewReport();
                         int index = -1;
-                        report.setDepartment(Utils.parseString(entity[index++], ""));
-                        report.setFaction(Utils.parseString(entity[index++], ""));
-                        report.setTitle(Utils.parseString(entity[index++], ""));
-                        report.setName(Utils.parseString(entity[index++], ""));
-                        report.setLoginName(Utils.parseString(entity[index++], ""));
-                        report.setPosition(Utils.parseString(entity[index++], ""));
-                        report.setCreateDate(Utils.convertDateToString(Utils.parseDate(entity[index++], null)));
-                        report.setRole(Utils.parseString(entity[index++], ""));
+                        log.debug("{}", index++);
+                        report.setDepartment(Utils.parseString(entity[0], ""));
+                        report.setFaction(Utils.parseString(entity[1], ""));
+                        report.setTitle(Utils.parseString(entity[2], ""));
+                        report.setName(Utils.parseString(entity[3], ""));
+                        report.setLoginName(Utils.parseString(entity[4], ""));
+                        report.setPosition(Utils.parseString(entity[5], ""));
+                        report.setCreateDate(Utils.convertDateToString(Utils.parseDate(entity[6], null)));
+                        report.setRole(Utils.parseString(entity[7], ""));
                         userAndRoleViewReportList.add(report);
                     }
             );
