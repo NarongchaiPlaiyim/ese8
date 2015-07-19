@@ -11,7 +11,7 @@ public enum NamesUtil {
     ;
     private String name;
 
-    private NamesUtil(String name) {
+    NamesUtil(String name) {
         this.name = name;
     }
 }

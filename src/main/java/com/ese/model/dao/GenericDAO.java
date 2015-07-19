@@ -46,9 +46,11 @@ public abstract class GenericDAO<T, ID extends Serializable> implements Serializ
     }
 
     public void persist(List<T> entityList) throws Exception {
-        for (T entity: entityList) {
-            persist(entity);
-        }
+        entityList.forEach(entity -> {
+                    sessionFactory.getCurrentSession()
+                                  .persist(entity);
+                }
+        );
     }
 
     public T update(T entity) throws Exception {
@@ -83,9 +85,11 @@ public abstract class GenericDAO<T, ID extends Serializable> implements Serializ
     }
 
     public void delete(List<T> entityList) throws Exception {
-        for (T entity: entityList) {
-            delete(entity);
-        }
+        entityList.forEach(entity -> {
+                    sessionFactory.getCurrentSession()
+                            .delete(entity);
+                }
+        );
     }
 
     protected Criteria getCriteria() throws Exception {
@@ -97,8 +101,7 @@ public abstract class GenericDAO<T, ID extends Serializable> implements Serializ
     }
 
     public boolean isRecordExist(Criterion... criterions) throws Exception {
-        List<T> list = findByCriteria(criterions);
-        return list.size()>0;
+        return findByCriteria(criterions).stream().count() > 0;
     }
 
     protected List<T> findBySQL(String sql, Object... params) throws Exception {
@@ -109,6 +112,7 @@ public abstract class GenericDAO<T, ID extends Serializable> implements Serializ
         return Utils.safetyList(query.list());
     }
     protected List<T> findBySQL(String sql) throws Exception {
-        return Utils.safetyList(getSession().createSQLQuery(sql).list());
+        return Utils.safetyList(getSession().createSQLQuery(sql)
+                                            .list());
     }
 }

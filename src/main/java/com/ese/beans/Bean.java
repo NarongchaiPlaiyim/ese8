@@ -1,17 +1,14 @@
 package com.ese.beans;
 
+import com.ese.service.IndexService;
 import com.ese.service.security.UserDetail;
-import com.ese.service.*;
 import com.ese.utils.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.faces.bean.ManagedProperty;
-import javax.faces.context.FacesContext;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -71,41 +68,42 @@ public abstract class Bean implements Serializable {
     }
 
     protected boolean preLoad(){
-        boolean result = true;
+        boolean result = Boolean.FALSE;
         try{
-            UserDetail userDetail = (UserDetail) FacesUtil.getSession(false).getAttribute(AttributeName.USER_DETAIL.getName());
+            UserDetail userDetail = (UserDetail) FacesUtil.getSession()
+                                                          .getAttribute(AttributeName.USER_DETAIL.getName());
             if(Utils.isNull(userDetail)){
                 FacesUtil.redirect(NamesUtil.LOGIN_PAGE.getName());
-                result = false;
             }
             setUserDetail(userDetail);
-            return result;
+            result = !result;
         } catch (Exception e) {
             FacesUtil.redirect(NamesUtil.LOGIN_PAGE.getName());
-            return false;
         }
+        return result;
     }
 
     protected boolean isAuthorize(String key){
-        boolean result = true;
+        boolean result = Boolean.FALSE;
         try {
-            Map<String,String> map = (Map<String, String>) FacesUtil.getSession(false).getAttribute(AttributeName.AUTHORIZE.getName());
+            Map<String,String> map = (Map<String, String>) FacesUtil.getSession()
+                                                                    .getAttribute(AttributeName.AUTHORIZE.getName());
             if(!map.containsKey(key)){
                 FacesUtil.redirect(NamesUtil.MAIN_PAGE.getName());
-                result = false;
             }
-            return result;
+            result = !result;
         } catch (Exception e) {
             FacesUtil.redirect(NamesUtil.LOGIN_PAGE.getName());
-            return false;
         }
+        return result;
     }
 
     protected UserDetail getUser(){
-        if(!Utils.isNull(this.userDetail)){
-            return userDetail;
-        } else {
-            return (UserDetail)FacesUtil.getSession(false).getAttribute(AttributeName.USER_DETAIL.getName());
+        UserDetail userDetail = this.userDetail;
+        if(Utils.isNull(userDetail)){
+            userDetail = (UserDetail)FacesUtil.getSession()
+                                              .getAttribute(AttributeName.USER_DETAIL.getName());
         }
+        return userDetail;
     }
 }

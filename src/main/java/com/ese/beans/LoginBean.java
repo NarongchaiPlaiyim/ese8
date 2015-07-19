@@ -2,14 +2,14 @@ package com.ese.beans;
 
 import com.ese.model.db.StaffModel;
 import com.ese.service.BarcodePrintingService;
-import com.ese.service.security.SimpleAuthenticationManager;
-import com.ese.service.security.encryption.EncryptionService;
 import com.ese.service.LoginService;
+import com.ese.service.security.SimpleAuthenticationManager;
+import com.ese.service.security.UserDetail;
+import com.ese.service.security.encryption.EncryptionService;
 import com.ese.utils.AttributeName;
 import com.ese.utils.FacesUtil;
 import com.ese.utils.MessageDialog;
 import com.ese.utils.Utils;
-import com.ese.service.security.UserDetail;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,12 +23,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -37,11 +35,12 @@ import java.util.Map;
 @ManagedBean(name = "loginBean")
 public class LoginBean extends Bean{
     private static final long serialVersionUID = 4112578634029374840L;
+
     @ManagedProperty("#{loginService}") private LoginService loginService;
     @ManagedProperty("#{sessionRegistry}") private SessionRegistry sessionRegistry;
     @ManagedProperty("#{sas}") private CompositeSessionAuthenticationStrategy compositeSessionAuthenticationStrategy;
-
     @ManagedProperty("#{barcodePrintingService}") private BarcodePrintingService barcodePrintingService;
+
     private String userName = "";
     private String password = "";
     private UserDetail userDetail;
@@ -49,12 +48,10 @@ public class LoginBean extends Bean{
 
     @PostConstruct
     private void init(){
+        map = new HashMap();
         if(!Utils.isNull(SecurityContextHolder.getContext().getAuthentication())){
             userDetail = (UserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            map = (Map<String, String>) FacesUtil.getSession(false).getAttribute(AttributeName.AUTHORIZE.getName());
-        } else {
-            log.debug("[NEW] CODE MAP");
-            map = new HashMap();
+            map = (Map<String, String>) FacesUtil.getSession().getAttribute(AttributeName.AUTHORIZE.getName());
         }
     }
 
