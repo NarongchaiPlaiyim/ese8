@@ -1,7 +1,7 @@
 package com.ese.service;
 
 import com.ese.model.dao.MenuObjectDAO;
-import com.ese.model.dao.StaffDAO;
+import com.ese.model.dao.StaffDAOInf;
 import com.ese.model.db.MenuObjectModel;
 import com.ese.model.db.StaffModel;
 import com.ese.utils.Utils;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class LoginService extends Service{
     private static final long serialVersionUID = 4112578634088874840L;
-    @Autowired private StaffDAO staffDAO;
+    @Autowired private StaffDAOInf staffDAOInf;
     @Resource private MenuObjectDAO menuObjectDAO;
 
     @Getter StaffModel staffModel;
@@ -30,7 +30,7 @@ public class LoginService extends Service{
         log.debug("-- isUserExist({}, {})", userName, password);
         boolean result = Boolean.FALSE;
         try {
-            staffModel = staffDAO.findByUserNameAndPassword(userName, password);
+            staffModel = staffDAOInf.findByUserNameAndPassword(userName, password);
             if(!Utils.isNull(staffModel)){
                 result = !result;
             }

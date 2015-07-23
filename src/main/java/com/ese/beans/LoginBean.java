@@ -53,12 +53,14 @@ public class LoginBean extends Bean{
             userDetail = (UserDetail) SecurityContextHolder.getContext()
                                                            .getAuthentication()
                                                            .getPrincipal();
-            set = (Set)FacesUtil.getSession().getAttribute(AttributeName.AUTHORIZE.getName());
+            set = (Set)FacesUtil.getSession()
+                                .getAttribute(AttributeName.AUTHORIZE.getName());
         }
     }
 
     public String login(){
-        log.info("-- SessionRegistry principle size: {}", sessionRegistry.getAllPrincipals().size());
+        log.info("-- SessionRegistry principle size: {}", sessionRegistry.getAllPrincipals()
+                                                                         .size());
         if(!Utils.isZero(userName.length()) &&
            !Utils.isZero(password.length())) {
 
@@ -68,7 +70,8 @@ public class LoginBean extends Bean{
                 userDetail = new UserDetail(staffModel.getUsername(),
                                             staffModel.getPassword(),
                                             "USER",
-                                            staffModel.getMsTitleModel().getName(),
+                                            staffModel.getMsTitleModel()
+                                                      .getName(),
                                             staffModel.getName());
                 userDetail.setId(Utils.parseInt(staffModel.getId(), 0));
                 HttpServletRequest httpServletRequest = FacesUtil.getRequest();

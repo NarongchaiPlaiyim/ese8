@@ -61,11 +61,21 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
     }
 
     @Override
+    public List<T> findByCriteria(Criteria criteria) throws Exception {
+        return Utils.safetyList(criteria.list());
+    }
+
+    @Override
     public T findOneByCriteria(Criterion... criterion) throws Exception {
         Criteria criteria = getCriteria();
         for (Criterion c : criterion) {
             criteria.add(c);
         }
+        return (T) criteria.uniqueResult();
+    }
+
+    @Override
+    public T findOneByCriteria(Criteria criteria) throws Exception {
         return (T) criteria.uniqueResult();
     }
 
@@ -77,10 +87,10 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
     @Override
     public void persist(List<T> entityList) throws Exception {
         entityList.forEach(entity -> {
-                    sessionFactory
-                            .getCurrentSession()
-                            .persist(entity);
-                });
+            sessionFactory
+                    .getCurrentSession()
+                    .persist(entity);
+        });
     }
 
     @Override
@@ -92,10 +102,10 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
     @Override
     public List<T>  update(List<T> entityList) throws Exception {
         entityList.forEach(entity -> {
-                    sessionFactory
-                            .getCurrentSession()
-                            .update(entity);
-                });
+            sessionFactory
+                    .getCurrentSession()
+                    .update(entity);
+        });
         return entityList;
     }
 
@@ -108,10 +118,10 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
     @Override
     public List<T> saveOrUpdate(List<T> entityList) throws Exception {
         entityList.forEach(entity -> {
-                    sessionFactory
-                            .getCurrentSession()
-                            .saveOrUpdate(entity);
-                });
+            sessionFactory
+                    .getCurrentSession()
+                    .saveOrUpdate(entity);
+        });
         return entityList;
     }
 
@@ -123,10 +133,10 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
     @Override
     public void delete(List<T> entityList) throws Exception {
         entityList.forEach(entity -> {
-                    sessionFactory
-                            .getCurrentSession()
-                            .delete(entity);
-                });
+            sessionFactory
+                    .getCurrentSession()
+                    .delete(entity);
+        });
     }
 
     @Override
@@ -137,6 +147,11 @@ public abstract class GenericDAO<T, ID extends Serializable> implements GenericD
     @Override
     public boolean isRecordExist(Criterion... criterion) throws Exception {
         return findByCriteria(criterion).stream().count() > 0;
+    }
+
+    @Override
+    public boolean isRecordExist(Criteria criteria) throws Exception {
+        return findByCriteria(criteria).stream().count() > 0;
     }
 
     protected void flush() throws Exception {

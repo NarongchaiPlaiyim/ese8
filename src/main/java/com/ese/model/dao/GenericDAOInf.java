@@ -10,7 +10,9 @@ public interface GenericDAOInf<T, ID extends Serializable> {
     T findByID(ID id) throws Exception;
     List<T> findAll() throws Exception;
     List<T> findByCriteria(Criterion... criterion) throws Exception;
+    List<T> findByCriteria(Criteria criteria) throws Exception;
     T findOneByCriteria(Criterion... criterion) throws Exception;
+    T findOneByCriteria(Criteria criteria) throws Exception;
 
     void persist(T entity) throws Exception;
     void persist(List<T> entityList) throws Exception;
@@ -26,4 +28,5 @@ public interface GenericDAOInf<T, ID extends Serializable> {
 
     Criteria getCriteria() throws Exception;
     boolean isRecordExist(Criterion... criterion) throws Exception;
+    boolean isRecordExist(Criteria criteria) throws Exception;
 }

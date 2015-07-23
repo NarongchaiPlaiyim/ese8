@@ -16,21 +16,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDAOInf<StaffModel, Integer>{
+public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDAOInf{
 
     @Override
     public StaffModel findByUserNameAndPassword(String userName, String password) throws Exception {
-        StaffModel staffModel = (StaffModel) getCriteria().add(Restrictions.eq("username", userName))
-                                                          .add(Restrictions.eq("password", password))
-                                                          .add(Restrictions.eq("isValid", 1))
-                                                          .uniqueResult();
-        return staffModel;
+        Criteria criteria = getCriteria().add(Restrictions.eq("username", userName))
+                                         .add(Restrictions.eq("password", password))
+                                         .add(Restrictions.eq("isValid", 1));
+        return findOneByCriteria(criteria);
     }
 
     @Override
     public boolean isUsernameExist(String userName) throws Exception {
-        return isRecordExist(Restrictions.eq("username", userName),
-                             Restrictions.eq("username", userName));
+        Criteria criteria = getCriteria().add(Restrictions.eq("username", userName))
+                                         .add(Restrictions.eq("username", userName));
+        return isRecordExist(criteria);
     }
 
     public List<StaffModel> test() throws Exception {
@@ -42,12 +42,12 @@ public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDA
     public List<StaffModel> findUserByIsValid(){
         List<StaffModel> staffModels = Utils.getEmptyList();
         try {
-            Criteria criteria = getSession().createCriteria(StaffModel.class, "s");
-            criteria.add(Restrictions.eq("isValid", 1));
-            criteria.createAlias("s.factionModel", "f");
-            criteria.createAlias("f.msDepartmentModel", "d");
-            criteria.addOrder(Order.asc("d.id"));
-            staffModels = Utils.safetyList(criteria.list());
+            Criteria criteria = getSession().createCriteria(StaffModel.class, "s")
+                                            .add(Restrictions.eq("isValid", 1))
+                                            .createAlias("s.factionModel", "f")
+                                            .createAlias("f.msDepartmentModel", "d")
+                                            .addOrder(Order.asc("d.id"));
+            staffModels = findByCriteria(criteria);
         } catch (Exception e) {
             log.debug("Exception error findUserByIsValid : ", e);
         }
@@ -60,16 +60,19 @@ public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDA
         log.debug("departmentId : {}, factionId : {}, keySearch : {}", departmentId, factionId, keySearch);
         List<StaffModel> staffModelList = Utils.getEmptyList();
         try {
-            Criteria criteria = getSession().createCriteria(StaffModel.class, "s");
-            criteria.add(Restrictions.eq("isValid", 1));
-            criteria.createAlias("s.factionModel", "f");
-            criteria.createAlias("f.msDepartmentModel", "d");
+            Criteria criteria = getSession().createCriteria(StaffModel.class, "s")
+                                            .add(Restrictions.eq("isValid", 1))
+                                            .createAlias("s.factionModel", "f")
+                                            .createAlias("f.msDepartmentModel", "d")
+                                            .addOrder(Order.asc("d.id"));
 
-            if (!Utils.isZero(factionId) && !Utils.isZero(departmentId)){
+            if (!Utils.isZero(factionId) &&
+                !Utils.isZero(departmentId)){
                 criteria.add(Restrictions.eq("factionModel.id", factionId));
             }
 
-            if (!Utils.isNull(keySearch.trim()) && keySearch.length() > 0){
+            if (!Utils.isNull(keySearch.trim()) &&
+                keySearch.length() > 0){
                 Criterion name = Restrictions.like("name", "%" + keySearch.trim() + "%");
                 Criterion userName = Restrictions.like("username", "%"+keySearch.trim()+"%");
                 criteria.add(Restrictions.or(name,userName));
@@ -79,8 +82,7 @@ public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDA
                 criteria.add(Restrictions.eq("d.id", departmentId));
             }
 
-            criteria.addOrder(Order.asc("d.id"));
-            staffModelList = Utils.safetyList(criteria.list());
+            staffModelList = findByCriteria(criteria);
         } catch (Exception e) {
             log.debug("Exception error findUserByIsValid : ", e);
         }
@@ -144,20 +146,24 @@ public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDA
 
             List<Object[]> objects = query.list();
             objects.stream().forEach(entity -> {
-                        UserAndRoleViewReport report = new UserAndRoleViewReport();
-                        int index = -1;
-                        log.debug("{}", index++);
-                        report.setDepartment(Utils.parseString(entity[0], ""));
-                        report.setFaction(Utils.parseString(entity[1], ""));
-                        report.setTitle(Utils.parseString(entity[2], ""));
-                        report.setName(Utils.parseString(entity[3], ""));
-                        report.setLoginName(Utils.parseString(entity[4], ""));
-                        report.setPosition(Utils.parseString(entity[5], ""));
-                        report.setCreateDate(Utils.convertDateToString(Utils.parseDate(entity[6], null)));
-                        report.setRole(Utils.parseString(entity[7], ""));
-                        userAndRoleViewReportList.add(report);
+//                        UserAndRoleViewReport report = new UserAndRoleViewReport().
+//                        UserAndRoleViewReport report = new UserAndRoleViewReport().`;
+
+
+
+
+//                        report.setDepartment(Utils.parseString(entity[0], ""));
+//                        report.setFaction(Utils.parseString(entity[1], ""));
+//                        report.setTitle(Utils.parseString(entity[2], ""));
+//                        report.setName(Utils.parseString(entity[3], ""));
+//                        report.setLoginName(Utils.parseString(entity[4], ""));
+//                        report.setPosition(Utils.parseString(entity[5], ""));
+//                        report.setCreateDate(Utils.convertDateToString(Utils.parseDate(entity[6], null)));
+//                        report.setRole(Utils.parseString(entity[7], ""));
+//                        userAndRoleViewReportList.add(report);
                     }
             );
+
 
 //            for (Object[] entity : objects) {
 //                UserAndRoleViewReport report = new UserAndRoleViewReport();
