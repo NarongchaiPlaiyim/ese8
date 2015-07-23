@@ -8,82 +8,71 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 //@Setter
 public class UserAndRoleViewReport {
 
-    private  String department;
-    private  String faction;
-    private  String title;
-    private  String name;
-    private  String loginName;
-    private  String position;
-    private  String createDate;
-    private  String role;
+    private final String department,
+                   faction,
+                   title,
+                   name,
+                   loginName,
+                   position,
+                   createDate,
+                   role;
 //    private String userPrint;
 //    private Date printDate;
 
-    public static class Builder {
-        private String department;
-        private String faction;
-        private String title;
-        private String name;
-        private String loginName;
-        private String position;
-        private String createDate;
-        private String role;
 
-        public Builder department(String department){
-            this.department = department;
-            return this;
-        }
-
-        public Builder faction(String faction){
-            this.faction = faction;
-            return this;
-        }
-
-        public Builder title(String title){
-            this.title = title;
-            return this;
-        }
-
-        public Builder name(String name){
-            this.name = name;
-            return this;
-        }
-
-        public Builder loginName(String loginName){
-            this.loginName = loginName;
-            return this;
-        }
-
-        public Builder position(String position){
-            this.position = position;
-            return this;
-        }
-
-        public Builder createDate(String createDate){
-            this.createDate = createDate;
-            return this;
-        }
-
-        public Builder role(String role){
-            this.role = role;
-            return this;
-        }
-
-        public UserAndRoleViewReport build() {
-            return new UserAndRoleViewReport(this);
-        }
-
+    private UserAndRoleViewReport(String department, String faction, String title, String name, String loginName, String position, String createDate, String role) {
+        this.department = department;
+        this.faction = faction;
+        this.title = title;
+        this.name = name;
+        this.loginName = loginName;
+        this.position = position;
+        this.createDate = createDate;
+        this.role = role;
     }
 
-    private UserAndRoleViewReport(Builder builder) {
-        this.department = builder.department;
-        this.faction = builder.faction;
-        this.title = builder.title;
-        this.name = builder.name;
-        this.loginName = builder.loginName;
-        this.position = builder.position;
-        this.createDate = builder.createDate;
-        this.role = builder.role;
+    public static DepartmentBuilder builder() {
+        return department ->
+               faction ->
+               title ->
+               name ->
+               loginName ->
+               position ->
+               createDate ->
+               role ->
+               new UserAndRoleViewReport(department, faction, title, name, loginName, position, createDate, role);
+    }
+
+    public interface DepartmentBuilder {
+        FactionBuilder department(String department);
+    }
+
+    public interface FactionBuilder {
+        TitleBuilder faction(String faction);
+    }
+
+    public interface TitleBuilder {
+        NameBuilder title(String title);
+    }
+
+    public interface NameBuilder {
+        LoginNameBuilder name(String name);
+    }
+
+    public interface LoginNameBuilder {
+        PositionBuilder loginName(String loginName);
+    }
+
+    public interface PositionBuilder {
+        CreateDateBuilder position(String position);
+    }
+
+    public interface CreateDateBuilder {
+        RoleBuilder createDate(String createDate);
+    }
+
+    public interface RoleBuilder {
+        UserAndRoleViewReport role(String role);
     }
 
     @Override
@@ -97,8 +86,6 @@ public class UserAndRoleViewReport {
                 .append("position", position)
                 .append("createDate", createDate)
                 .append("role", role)
-//                .append("userPrint", userPrint)
-//                .append("printDate", printDate)
                 .toString();
     }
 }

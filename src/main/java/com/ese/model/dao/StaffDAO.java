@@ -145,38 +145,21 @@ public class StaffDAO extends GenericDAO<StaffModel, Integer> implements StaffDA
                                          .addScalar("ROLE", StringType.INSTANCE);
 
             List<Object[]> objects = query.list();
+
+
             objects.stream().forEach(entity -> {
-//                        UserAndRoleViewReport report = new UserAndRoleViewReport().
-//                        UserAndRoleViewReport report = new UserAndRoleViewReport().`;
-
-
-
-
-//                        report.setDepartment(Utils.parseString(entity[0], ""));
-//                        report.setFaction(Utils.parseString(entity[1], ""));
-//                        report.setTitle(Utils.parseString(entity[2], ""));
-//                        report.setName(Utils.parseString(entity[3], ""));
-//                        report.setLoginName(Utils.parseString(entity[4], ""));
-//                        report.setPosition(Utils.parseString(entity[5], ""));
-//                        report.setCreateDate(Utils.convertDateToString(Utils.parseDate(entity[6], null)));
-//                        report.setRole(Utils.parseString(entity[7], ""));
-//                        userAndRoleViewReportList.add(report);
+                        UserAndRoleViewReport report = UserAndRoleViewReport.builder()
+                                                                            .department(Utils.parseString(entity[0], ""))
+                                                                            .faction(Utils.parseString(entity[1], ""))
+                                                                            .title(Utils.parseString(entity[2], ""))
+                                                                            .name(Utils.parseString(entity[3], ""))
+                                                                            .loginName(Utils.parseString(entity[4], ""))
+                                                                            .position(Utils.parseString(entity[5], ""))
+                                                                            .createDate(Utils.convertDateToString(Utils.parseDate(entity[6], null)))
+                                                                            .role(Utils.parseString(entity[7], ""));
+                        userAndRoleViewReportList.add(report);
                     }
             );
-
-
-//            for (Object[] entity : objects) {
-//                UserAndRoleViewReport report = new UserAndRoleViewReport();
-//                report.setDepartment(Utils.parseString(entity[0], ""));
-//                report.setFaction(Utils.parseString(entity[1], ""));
-//                report.setTitle(Utils.parseString(entity[2], ""));
-//                report.setName(Utils.parseString(entity[3], ""));
-//                report.setLoginName(Utils.parseString(entity[4], ""));
-//                report.setPosition(Utils.parseString(entity[5], ""));
-//                report.setCreateDate(Utils.convertDateToString(Utils.parseDate(entity[6], null)));
-//                report.setRole(Utils.parseString(entity[7], ""));
-//                reportViews.add(report);
-//            }
         } catch (Exception e) {
             log.debug("Exception SQL : {}", e);
         }
