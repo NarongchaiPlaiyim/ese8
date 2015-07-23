@@ -1,0 +1,160 @@
+package example.list;
+
+public class ProfileModel {
+    private  String firstName,
+                         lastName,
+                         nickName,
+                         mobileNo,
+                         email;
+    private  short  age;
+    private String address1;
+    private String address2;
+    private String address3;
+
+    private ProfileModel() {
+
+    }
+
+    private ProfileModel(String firstName, String lastName, String nickName, String mobileNo, String email, short age) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nickName = nickName;
+        this.mobileNo = mobileNo;
+        this.email = email;
+        this.age = age;
+    }
+
+//    public static FirstNameBuilder person() {
+//        return firstName ->
+//                lastName ->
+//                nickName ->
+//                mobileNo ->
+//                   email ->
+//                     age ->
+//                new ProfileModel(firstName, lastName, nickName, mobileNo, email, age);
+
+//        ProfileModel profileModel = firstName ->
+//                                    lastName ->
+//                                    nickName ->
+//                                    mobileNo ->
+//                                    email ->
+//                                    age ->
+//                                    new ProfileModel(firstName, lastName, nickName, mobileNo, email, age);
+//
+//        return firstName;
+//    }
+
+    public static FirstNameBuilder builder() {
+        return new ProfileModel.Builder();
+    }
+
+    interface FirstNameBuilder {
+        LastNameBuilder firstName(String firstName);
+    }
+
+    interface LastNameBuilder {
+        NickBuilder lastName(String lastName);
+    }
+
+    interface NickBuilder {
+        MobileNoBuilder nickName(String nickName);
+    }
+
+    interface MobileNoBuilder {
+        EmailBuilder mobileNo(String mobileNo);
+    }
+
+    interface EmailBuilder {
+        AgeBuilder email(String email);
+    }
+
+    interface AgeBuilder {
+        ModelBuilder age(short age);
+    }
+
+    interface ModelBuilder {
+        ModelBuilder address1(String address1);
+        ModelBuilder address2(String address2);
+        ModelBuilder address3(String address3);
+        ProfileModel build();
+    }
+
+
+    private static class Builder implements FirstNameBuilder, LastNameBuilder, NickBuilder, MobileNoBuilder, EmailBuilder, AgeBuilder, ModelBuilder{
+        ProfileModel profileModel = new ProfileModel();
+
+        @Override
+        public LastNameBuilder firstName(String firstName) {
+            profileModel.firstName = firstName;
+            return this;
+        }
+
+        @Override
+        public NickBuilder lastName(String lastName) {
+            profileModel.lastName = lastName;
+            return this;
+        }
+
+        @Override
+        public MobileNoBuilder nickName(String nickName) {
+            profileModel.nickName = nickName;
+            return this;
+        }
+
+        @Override
+        public EmailBuilder mobileNo(String mobileNo) {
+            profileModel.mobileNo = mobileNo;
+            return this;
+        }
+
+        @Override
+        public AgeBuilder email(String email) {
+            profileModel.email = email;
+            return this;
+        }
+
+        @Override
+        public ModelBuilder age(short age) {
+            profileModel.age = age;
+            return this;
+        }
+
+        @Override
+        public ModelBuilder address1(String address1) {
+            profileModel.address1 = address1;
+            return this;
+        }
+
+        @Override
+        public ModelBuilder address2(String address2) {
+            profileModel.address2 = address2;
+            return this;
+        }
+
+        @Override
+        public ModelBuilder address3(String address3) {
+            profileModel.address3 = address3;
+            return this;
+        }
+
+        @Override
+        public ProfileModel build() {
+            return profileModel;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "ProfileModel{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", mobileNo='" + mobileNo + '\'' +
+                ", email='" + email + '\'' +
+                ", age=" + age +
+                ", address1='" + address1 + '\'' +
+                ", address2='" + address2 + '\'' +
+                ", address3='" + address3 + '\'' +
+                '}';
+    }
+}
